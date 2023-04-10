@@ -17,6 +17,8 @@ plugins {
     id("org.jetbrains.qodana") version "0.1.13"
     // Gradle Kover Plugin
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
+    // pitest plugin
+    id("info.solidsoft.pitest") version "1.9.0" //apply true
 }
 
 group = properties("pluginGroup").get()
@@ -25,6 +27,24 @@ version = properties("pluginVersion").get()
 // Configure project's dependencies
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    implementation("org.pitest:pitest:1.9.0") {
+        exclude(group = "junit", module = "junit")
+    }
+    implementation("org.pitest:pitest-entry:1.11.6")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10")
+    testImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("junit:junit:4.13.1")
+//    testImplementation("org.pitest:pitest:${pitest.pitestVersion}:test-jar")
+//    testImplementation("org.pitest:pitest-entry:${pitest.pitestVersion}:test-jar")
+
+}
+
+pitest {
+    pitestVersion
+    targetClasses
 }
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
@@ -122,3 +142,4 @@ tasks {
         channels.set(properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) })
     }
 }
+
